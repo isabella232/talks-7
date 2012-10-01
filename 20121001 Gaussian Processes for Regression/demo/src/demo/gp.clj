@@ -62,6 +62,3 @@
 ;; (view (charts/scatter-plot X Y))
 ;; (plot-samples 5 (GP RBF X Y X*) X Y X*)
 
-;; TODO:
-;; exemplo usando dados de venda do Walmart
-;; exemplo usando dados da Petro
