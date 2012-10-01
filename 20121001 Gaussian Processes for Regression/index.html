@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+	<!--
+	Google HTML5 slide template
+
+Authors: Luke Mah?? (code)
+Marcin Wichary (code and design)
+
+Dominic Mazzoni (browser compatibility)
+Charles Chen (ChromeVox support)
+
+URL: http://code.google.com/p/html5slides/
+	-->
+	
+<html>
+<head>
+	
+	<meta charset='utf-8'>
+	<title>intelie talk </title>
+  <meta name="description" content="intelie talk ">
+  <meta name="author" content="">
+  <meta name="generator" content="slidify" />
+	
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="/home/pedro/R/x86_64-unknown-linux-gnu-library/2.15/slidify/libraries/html5slides/default/styles.css">
+	<link rel="stylesheet" href="/home/pedro/R/x86_64-unknown-linux-gnu-library/2.15/slidify/libraries/html5slides/default/uulm.css">
+	<link rel="stylesheet" href="/home/pedro/R/x86_64-unknown-linux-gnu-library/2.15/slidify/libraries/highlight.js/styles/github.css">
+  <!-- LOAD CUSTOM CSS -->
+  <link rel="stylesheet" href="assets/stylesheets/custom.css">
+
+    
+</head>
+<body style='display: none'>
+	<section class='slides layout-regular template-regular'>
+	  <article class = "" id = "slide-1"> 
+	    <h1>intelie talk </h1>
+
+
+<h2>Gaussian Processes for regression</h2>
+
+<h3>01/10/2012</h3>
+
+    </article>
+	  <article class = "" id = "slide-2"> 
+	    
+<p>Machine learning</p>
+
+    </article>
+	  <article class = "" id = "slide-3"> 
+	    
+<p>Supervised learning</p>
+
+<hr>
+
+<p>the problem of learning input-output mappings from empirical data (the training dataset).</p>
+
+<p>that is:</p>
+
+<ul>
+<li>we observe some inputs $x_i$ and some outputs $y_i$</li>
+<li>we assume $y_i = f(x_i)$ for some unknown $f$</li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-4"> 
+	    
+<p>Regression problem</p>
+
+<hr>
+
+<ul>
+<li><em>Aim</em>: recover underlying process from <strong>observed data</strong>, allowing prediction of <em>continuous</em> quantities.</li>
+</ul>
+
+<div class="rimage center"><img src="figure/regressionExample.png"  class="plot" /></div>
+
+    </article>
+	  <article class = "" id = "slide-5"> 
+	    
+<p>Probabilistic approach</p>
+
+<hr>
+
+<ul>
+<li>probabilistic models can make predicitions, decisions, etc.</li>
+<li>generative models can be used to handle missing inputs</li>
+<li>uncertantity is a crucial concept</li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-6"> 
+	    
+<p>Basic Rules of Probability</p>
+
+<hr>
+
+<ul>
+<li><p>probabilities are non-negative $p(x) \ge 0 \forall x$</p></li>
+<li><p>probabilities normalize $\sum_{x \in X} p(x) = 1$ </p></li>
+<li><p>join probability of $x$ and $y$ is $p(x,y)$</p></li>
+<li><p>mariginal probability of $x$ is: $p(x) = \sum_{y} p(x, y)$</p></li>
+<li><p>conditional probability of $x$ given $y$ is $p(x|y) = p(x,y)/p(y)$</p></li>
+<li><p>Bayes Rule:
+$$
+p(x,y) = p(x) p(y|x) = p(y) p(x|y) \\
+\implies p(y|x) = \frac{ p(x|y) p(y)  }{ p(x)} 
+$$</p></li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-7"> 
+	    
+<p>Expectation and Variance</p>
+
+<hr>
+
+<ul>
+<li>the <em>expectation</em> (mean, average) of a random variable is:</li>
+</ul>
+
+<p>$$ \mu = \mathbb{E}[x] = \int{ x p(x) dx} $$</p>
+
+<ul>
+<li>the <em>variance</em> is:</li>
+</ul>
+
+<p>$$
+  \sigma^2 = \mathbb{V}[x] = \int{ (x - \mu)^2 p(x) dx } = \mathbb{E}[x^2] - \mathbb{E}[X]^2
+$$</p>
+
+    </article>
+	  <article class = "" id = "slide-8"> 
+	    
+<p>Univariate Gaussian density $y \in \mathbb{R}, \quad y \sim \mathcal{N}(\mu, \sigma^2)$</p>
+
+<div class="rimage center"><img src="figure/normalPlot.png"  class="plot" /></div>
+
+<p>$$ p(y|\mu,\sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp { \left( - \frac{ ( y - \mu)^2 }{2\sigma^2} \right) } $$</p>
+
+    </article>
+	  <article class = "" id = "slide-9"> 
+	    
+<p>Multivariate Gaussian density $y \in \mathbb{R}^D, \quad y \sim \mathcal{N}(\mathbf{\mu}, \Sigma)$</p>
+
+<div class="rimage center"><img src="figure/multivariateNormalPlot.png"  class="plot" /></div>
+
+<p>$$ p(\mathbf{y}|\mathbf{\mu},\Sigma) = \lvert 2\pi\Sigma \rvert^{-\frac{1}{2}} \exp{ \left[ - \frac{1}{2} ( \mathbf{y} - \mathbf{\mu} )^T \Sigma^{-1} (\mathbf{y} - \mathbf{\mu} )  \right] } $$</p>
+
+    </article>
+	  <article class = "" id = "slide-10"> 
+	    
+<p>Sampling from a Gaussian distribution</p>
+
+<hr>
+
+<ul>
+<li>$\mathbf{z} \sim \mathcal{N}(0,1) $</li>
+</ul>
+
+<p>http://en.wikipedia.org/wiki/Normal_distribution#Generating_values_from_normal_distribution</p>
+
+    </article>
+	  <article class = "" id = "slide-11"> 
+	    
+<p>Sampling from a multivariate distribution</p>
+
+<hr>
+
+<p>http://www.ideal.ece.utexas.edu/~gjun/ee379k/html/clustering/gmm_em/</p>
+
+    </article>
+	  <article class = "" id = "slide-12"> 
+	    
+<p>Bayesian learning overview</p>
+
+<hr>
+
+<ul>
+<li><p>make <strong>prior</strong> assumptions on the value of the parameters <strong>before</strong> we see the data</p></li>
+<li><p><strong>prior</strong> distribution over the parameters: $p(\theta)$</p></li>
+<li><p>model of the data given the parameters, <strong>likelihood</strong> function $p(D|\theta)$</p></li>
+<li><p>posterior distribution of model parameters:</p></li>
+</ul>
+
+<p>$$ p(\theta | D) = \frac{ p(D|\theta) p(\theta) } {p(D)} $$ </p>
+
+    </article>
+	  <article class = "" id = "slide-13"> 
+	    <h1>Gaussian Processes</h1>
+
+
+<ul>
+<li><p>A Gaussian process is a generalization of a Gaussian distribution to infinitely many random variables </p></li>
+<li><p>Inference takes place directly in function space.</p></li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-14"> 
+	    
+<p>A Gaussian process is completely specified by its mean function and co-variance function. </p>
+
+<p>We define mean function $m(\mathbf{x})$ and the covariance function $k(\mathbf{x}, \mathbf{x}&#39;)$ of a real process $f(\mathbf{x})$ as </p>
+
+<p>$$f(x) \sim \mathcal{GP}(m(\mathbf{x}), k(\mathbf{x}, \mathbf{x}&#39;))  $$</p>
+
+    </article>
+	  <article class = "" id = "slide-15"> 
+	    
+<p>We&#39;ll consider the squared exponential (SE) covariance function</p>
+
+<p>$$ cov( f(\mathbf{x}_p), f(\mathbf{x}_q) =  k(\mathbf{x}_p, \mathbf{x}_q) = \exp( - \frac{1}{2} | \mathbf{x}_p - \mathbf{x}_q |^2 ) $$</p>
+
+<ul>
+<li><p>which is also known as Radial Basis Function (RBF) kernel.</p></li>
+<li><p>covariance between <em>outputs</em> is written as function of the <em>inputs</em></p></li>
+<li><p>it can be shown that the SE covarience function corresponds to a <strong>Bayesian linear regression model</strong> with an infinite number of basis functions.</p></li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-16"> 
+	    
+<p>Bayesian linear regression</p>
+
+<hr>
+
+<p>a GP can be shown to be equivalent to the Bayesian linear regression model.</p>
+
+<p>Assuming noise $\epsilon \sim \mathcal{N}(0,\sigma^2)$, the linear regression model is: 
+ $$ f(\mathbf{x}) = \mathbf{x}^T \mathbf{w}, \quad y = f + \epsilon $$</p>
+
+<p>and we put a zero mean Gaussian prior with covariance matrix $\Sigma_p$ on the weights:</p>
+
+<p>$$ \mathbf{w} \sim \mathcal{N}(\mathbf{0},\Sigma_p^2) $$</p>
+
+    </article>
+	  <article class = "" id = "slide-17"> 
+	    
+<p>Bayesian linear regression </p>
+
+<hr>
+
+<p>The linear model is extended with function $\phi(\mathbf{x})$ which maps a $D$-dimensional input vector $\mathbf{x}$ into an $N$ dimensional feature space, so now the model becomes:</p>
+
+<p>$$ f(\mathbf{x}) = \phi(\mathbf{x})^T \mathbf{w} $$</p>
+
+<p>this enables the linear model perform well even in non-linear problems.</p>
+
+    </article>
+	  <article class = "" id = "slide-18"> 
+	    
+<p>Specification of the covariance function implies a distribution over functions. Given a number of input points $X_\ast$ we can sample from:</p>
+
+<p>$$ \mathbf{f}_\ast \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_\ast )  $$</p>
+
+<div class="rimage center"><img src="figure/sampleGPs.png"  class="plot" /></div>
+
+<ul>
+<li>$\mathbf{K}_\ast = k(X, X_\ast)$ </li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-19"> 
+	    
+<p>Prediction with noise-free observations</p>
+
+<hr>
+
+<p>Consider we know ${(\mathbf{x}_i, f_i) | i = 1, \dots, n}$, the joint distribution of the training outputs $\mathbf{f}$ and the test outputs $\mathbf{f}_\ast$ according to the prior is:</p>
+
+<p>$$ \begin{bmatrix} \mathbf{f} \\ \mathbf{f}_\ast \end{bmatrix}
+\sim \mathcal{N} \left( \begin{bmatrix} \mathbf{\mu} \\ \mathbf{\mu_\ast} \end{bmatrix},
+\begin{bmatrix}
+\mathbf{K} &amp;  \mathbf{K}_\ast \\
+\mathbf{K}_\ast^T  &amp;  \mathbf{K}_{\ast\ast} \\
+\end{bmatrix} \right)
+$$</p>
+
+<ul>
+<li>$\mathbf{\mu} = ( m(\mathbf{x}_i), \dots, m(\mathbf{x}_n) ) $<br></li>
+<li>$K_{ij} = k(\mathbf{x}_i,\mathbf{x}_j)$ is $n \times n$<br></li>
+<li>$\mathbf{K}_\ast = k(X, X_\ast)$ </li>
+<li>$\mathbf{K}_{\ast\ast} = k(X_\ast, X_\ast)$</li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-20"> 
+	    
+<p>Prediction with noise-free observations</p>
+
+<hr>
+
+<p>By rules for conditioning Gaussians, the posterior has the following form</p>
+
+<p>$$ \begin{aligned} 
+ p(\mathbf{f}_\ast | X_\ast, X, \mathbf{f}) &amp;= \mathcal{N}( \mathbf{f}_\ast | \mathbf{\mu}_\ast, \Sigma_\ast ) \\
+ \mathbf{\mu}_\ast &amp;= \mathbf{\mu}(X_\ast) + \mathbf{K}_\ast^T \mathbf{K}^{-1} (\mathbf{f} - \mathbf{\mu}(X))  \\
+ \Sigma_\ast &amp;= \mathbf{K}_{\ast \ast} - \mathbf{K}_\ast^T \mathbf{K}^{-1} \mathbf{K}_\ast<br>
+ \end{aligned} $$ </p>
+
+<p>The mean of the posterior distribution is also its mode, which is also called the <em>maximum a posteriori</em> (<strong>MAP</strong>) estimate.</p>
+
+    </article>
+	  <article class = "" id = "slide-21"> 
+	    
+<p>GP regression with SE kernel</p>
+
+<hr>
+
+<div class="rimage center"><img src="figure/noiseFreePredictions.png"  class="plot" /></div>
+
+    </article>
+	  <article class = "" id = "slide-22"> 
+	    
+<p>GP regression with SE kernel considering noise</p>
+
+<hr>
+
+<pre><code>## Warning: Removed 11 rows containing missing values (geom_path).
+</code></pre>
+
+<div class="rimage center"><img src="figure/noisePredictions.png"  class="plot" /></div>
+
+    </article>
+	  <article class = "" id = "slide-23"> 
+	    
+<p>Non parametric method bayesian models</p>
+
+<hr>
+
+<ul>
+<li><p>very flexibe, state of the art results for regression</p></li>
+<li><p>$O(n^3)$ flops, dominated by matrix inverse</p></li>
+<li><p><em>cholesky</em> is normally used because it&#39;s more numerically stable</p></li>
+<li><p>still prohibitive for large $n$</p></li>
+<li><p>Iterative methods: <em>Conjugate Gradient, Jacobi method, Gaussian Belief Propagation</em></p></li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-24"> 
+	    
+<p>Many other covarience functions</p>
+
+<hr>
+
+<ul>
+<li>polynomial</li>
+<li>Matérn</li>
+<li>exponential, $\gamma$-exponential</li>
+<li>rational quadratic</li>
+<li>neural network</li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-25"> 
+	    
+<p>Estimating free (hyper, kernel) parameters</p>
+
+<hr>
+
+    </article>
+	  <article class = "" id = "slide-26"> 
+	    
+<p>Connections to GPs</p>
+
+<hr>
+
+<ul>
+<li>SVM</li>
+<li>Neural Nets</li>
+<li>Splines</li>
+<li>and others</li>
+</ul>
+
+    </article>
+	  <article class = "" id = "slide-27"> 
+	    
+<p>References</p>
+
+<hr>
+
+<ul>
+<li>C. E. Rasmussen &amp; C. K. I. Williams, Gaussian Processes for Machine Learning,</li>
+<li>Kevin Murphy, Machine Learning A Probalistic Perspective. </li>
+<li>http://www.jameskeirstead.ca/r/gaussian-process-regression-with-r/</li>
+</ul>
+
+    </article>
+  </section>
+</body>
+  <!-- LOAD JAVASCRIPTS  -->
+	<script src='/home/pedro/R/x86_64-unknown-linux-gnu-library/2.15/slidify/libraries/html5slides/default/slides.js'></script>
+	<!-- LOAD MATHJAX JS -->
+  <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [['$','$'], ['\\(','\\)']],
+         processEscapes: true
+       }
+     });
+  </script>
+  <script type="text/javascript"  
+src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+  <!-- DONE LOADING MATHJAX -->
+	  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="/home/pedro/R/x86_64-unknown-linux-gnu-library/2.15/slidify/libraries/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING CSS FILES AND JS -->
+
+		
+	
+</html>
+
